@@ -10,3 +10,4 @@ urlpatterns = [
     path('lessons/', LessonListCreateView.as_view(), name='lesson-list-create'),  # эндпоинт для списка уроков
     path('lessons/<int:pk>/', LessonRetrieveUpdateDestroyView.as_view(), name='lesson-detail'),  # эндпоинт для конкретного урока
 ]
+

@@ -10,3 +10,4 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']  # Можно добавить другие обязательные поля
+
