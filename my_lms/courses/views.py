@@ -4,6 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets, generics
 from .models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer
+from rest_framework.permissions import IsAuthenticated
+from .models import Payment
+from .serializers import PaymentSerializer
+from .filters import PaymentFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CourseListView(APIView):
@@ -30,3 +35,12 @@ class LessonRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
+
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = PaymentFilter
+    ordering_fields = ['payment_date']
+    ordering = ['-payment_date']  # По умолчанию сортируем по убыванию даты
