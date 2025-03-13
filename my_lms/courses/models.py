@@ -1,15 +1,12 @@
 from django.db import models
 from users.models import CustomUser
 from rest_framework import serializers
-from .models import Course
 from django.contrib.auth.models import User
 from .lesson import Lesson
 from django.core.management.base import BaseCommand
 from users.models import Payment, Course, Lesson
 from django.contrib.auth.models import User
-from rest_framework import serializers
-from .models import Payment, Lesson, Course
-from .lesson import LessonSerializer
+from .models import Lesson, Course
 import django_filters
 from .models import Payment
 
@@ -93,31 +90,6 @@ class Command(BaseCommand):
         )
 
         self.stdout.write(self.style.SUCCESS('Successfully created payment records'))
-
-
-class LessonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lesson
-        fields = ['id', 'title', 'content']
-
-
-class CourseSerializer(serializers.ModelSerializer):
-    lesson_count = serializers.SerializerMethodField()
-    lessons = LessonSerializer(many=True)  # Включаем все уроки, связанные с курсом
-
-    class Meta:
-        model = Course
-        fields = ['id', 'title', 'description', 'lesson_count', 'lessons']
-
-    def get_lesson_count(self, obj):
-        # Возвращаем количество уроков в курсе
-        return obj.lessons.count()
-
-
-class PaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payment
-        fields = ['id', 'user', 'course', 'lesson', 'payment_date', 'amount', 'payment_method']
 
 
 class PaymentFilter(django_filters.FilterSet):
