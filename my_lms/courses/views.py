@@ -2,12 +2,10 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets, generics
-from .models import Course, Lesson
-from .serializers import CourseSerializer, LessonSerializer
+from .models import Course, Lesson, PaymentFilter
+from .serializers import CourseSerializer, FullLessonSerializer, ShortLessonSerializer, PaymentSerializer
 from rest_framework.permissions import IsAuthenticated
 from .models import Payment
-from .serializers import PaymentSerializer
-from .filters import PaymentFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -23,17 +21,17 @@ class CourseListView(APIView):
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
-    serializer_class = CourseSerializer
+    serializer_class = CourseSerializer  # Используй сериализатор, который тебе нужен
 
 
 class LessonListCreateView(generics.ListCreateAPIView):
     queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
+    serializer_class = ShortLessonSerializer  # Используем сокращенный сериализатор для списка
 
 
 class LessonRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
+    serializer_class = FullLessonSerializer  # Используем полный сериализатор для детального просмотра/обновления
 
 
 class PaymentViewSet(viewsets.ModelViewSet):

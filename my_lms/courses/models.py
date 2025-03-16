@@ -1,14 +1,9 @@
+from django.core.management import BaseCommand
 from django.db import models
-from users.models import CustomUser
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .lesson import Lesson
-from django.core.management.base import BaseCommand
-from users.models import Payment, Course, Lesson
-from django.contrib.auth.models import User
-from .models import Lesson, Course
-import django_filters
-from .models import Payment
+from django_filters import FilterSet, ModelChoiceFilter, ChoiceFilter, DateFromToRangeFilter
+from my_lms.users.models import CustomUser
 
 
 class Course(models.Model):
@@ -16,7 +11,6 @@ class Course(models.Model):
     preview_image = models.ImageField(upload_to='course_previews/')
     description = models.TextField()
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='courses')
-    course = models.ForeignKey(Course, related_name='lessons', on_delete=models.CASCADE)
     content = models.TextField()
 
     def __str__(self):
@@ -92,18 +86,18 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Successfully created payment records'))
 
 
-class PaymentFilter(django_filters.FilterSet):
+class PaymentFilter(FilterSet):
     # Фильтр по дате оплаты
-    payment_date = django_filters.DateFromToRangeFilter(field_name='payment_date')
+    payment_date = DateFromToRangeFilter(field_name='payment_date')
 
     # Фильтр по курсу
-    course = django_filters.ModelChoiceFilter(queryset=Course.objects.all(), field_name='course')
+    course = ModelChoiceFilter(queryset=Course.objects.all(), field_name='course')
 
     # Фильтр по уроку
-    lesson = django_filters.ModelChoiceFilter(queryset=Lesson.objects.all(), field_name='lesson')
+    lesson = ModelChoiceFilter(queryset=Lesson.objects.all(), field_name='lesson')
 
     # Фильтр по способу оплаты
-    payment_method = django_filters.ChoiceFilter(choices=Payment.PAYMENT_METHOD_CHOICES)
+    payment_method = ChoiceFilter(choices=Payment.PAYMENT_METHOD_CHOICES)
 
     class Meta:
         model = Payment

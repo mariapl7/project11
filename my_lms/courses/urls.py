@@ -8,8 +8,7 @@ router.register(r'courses', CourseViewSet)
 router.register(r'payments', PaymentViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),  # все эндпоинты для курса
-    path('lessons/', LessonListCreateView.as_view(), name='lesson-list-create'),  # эндпоинт для списка уроков
-    path('lessons/<int:pk>/', LessonRetrieveUpdateDestroyView.as_view(), name='lesson-detail'),  # эндпоинт для конкретного урока
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),  # Все эндпоинты для курсов и платежей
+    path('lessons/', LessonListCreateView.as_view(), name='lesson-list-create'),  # Эндпоинт для списка уроков
+    path('lessons/<int:pk>/', LessonRetrieveUpdateDestroyView.as_view(), name='lesson-detail'),  # Эндпоинт для конкретного урока
 ]
