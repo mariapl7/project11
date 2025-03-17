@@ -3,7 +3,7 @@ from django.db import models
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django_filters import FilterSet, ModelChoiceFilter, ChoiceFilter, DateFromToRangeFilter
-from my_lms.users.models import CustomUser
+from users.models import CustomUser
 
 
 class Course(models.Model):
