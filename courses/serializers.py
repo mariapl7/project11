@@ -1,40 +1,27 @@
 from rest_framework import serializers
-from .models import Course, Lesson, Payment
+from .models import Course, Lesson
+
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Course
-        fields = '__all__'
-
-
-class FullLessonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lesson
-        fields = '__all__'
-
-
-class ShortLessonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lesson
-        fields = ['id', 'title', 'content']
-
-
-class CourseDetailSerializer(serializers.ModelSerializer):
     lesson_count = serializers.SerializerMethodField()
-    lessons = ShortLessonSerializer(many=True)  # Включаем только необходимые уроки
+    number_of_lessons = serializers.SerializerMethodField()
+    lessons = LessonSerializer(many=True)
 
     class Meta:
         model = Course
-        fields = ['id', 'title', 'description', 'lesson_count', 'lessons']
-
+        fields = ['id', 'name', 'description', 'lesson_count', 'number_of_lessons', 'lessons']
 
     def get_lesson_count(self, obj):
-        # Возвращаем количество уроков в курсе
+        # Возвращаем количество уроков для данного курса
+        return obj.lessons.count()  # Используем related_name 'lessons', чтобы получить все уроки
+
+    def get_number_of_lessons(self, obj):
+        # Получаем количество уроков для этого курса
         return obj.lessons.count()
 
 
-class PaymentSerializer(serializers.ModelSerializer):
+class LessonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Payment
-        fields = ['id', 'user', 'course', 'lesson', 'payment_date', 'amount', 'payment_method']
+        model = Lesson
+        fields = ['id', 'title', 'description', 'created_at']  # Укажите необходимые поля модели Lesson
