@@ -1,4 +1,7 @@
+from django.http import HttpResponseForbidden
+from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
 from .models import Course,Lesson
 from .serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator
@@ -38,3 +41,19 @@ class LessonViewSet(viewsets.ModelViewSet):
         elif self.action == 'destroy':
             self.permission_classes = [IsAuthenticated]
         return super().get_permissions()
+
+
+def edit_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    if course.owner != request.user and not request.user.groups.filter(name='Moderators').exists():
+        return HttpResponseForbidden("Вы не можете редактировать этот курс.")
+    # Логика редактирования курса
+    return render(request, 'edit_course.html', {'course': course})
+
+
+def edit_lesson(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    if lesson.owner != request.user and not request.user.groups.filter(name='Moderators').exists():
+        return HttpResponseForbidden("Вы не можете редактировать этот урок.")
+    # Логика редактирования урока
+    return render(request, 'edit_lesson.html', {'lesson': lesson})
