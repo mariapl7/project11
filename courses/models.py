@@ -5,20 +5,22 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseForbidden
 
 
+from django.db import models
+from django.contrib.auth.models import User
+
 class Course(models.Model):
-    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=255)
     description = models.TextField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="courses")
 
     def __str__(self):
-        return self.name
-
+        return self.title
 
 class Lesson(models.Model):
-    course = models.ForeignKey(Course, related_name='lessons', on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=255)
     content = models.TextField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lessons')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="lessons")
 
     def __str__(self):
         return self.title

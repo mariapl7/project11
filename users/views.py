@@ -9,6 +9,33 @@ from rest_framework import viewsets
 from .models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer
 from .permissions import IsOwner
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+from rest_framework.permissions import IsAuthenticated
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    # Для того чтобы пользователи могли регистрироваться без авторизации
+    @action(detail=False, methods=['post'])
+    def register(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "user": serializer.data,
+                "message": "User registered successfully!"
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, *args, **kwargs):
+        return self.register(request)  # Для регистрации
 
 
 class UserPaymentHistorySerializer:
