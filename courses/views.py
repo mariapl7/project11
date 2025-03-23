@@ -19,6 +19,7 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Course.objects.all()  # Модераторы могут видеть все курсы
         return Course.objects.filter(owner=self.request.user)  # Пользователь видит только свои курсы
 
+
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
