@@ -11,7 +11,6 @@ from .serializers import CourseSerializer, LessonSerializer
 from .permissions import IsOwner
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -69,41 +68,6 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-
-
-class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-
-    def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve':
-            return [IsAuthenticated()]
-        elif self.action == 'create':
-            return [IsAuthenticated()]
-        elif self.action in ['update', 'partial_update', 'destroy']:
-            return [IsAuthenticated(), IsOwner()]
-        return [IsAuthenticated()]
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-class LessonViewSet(viewsets.ModelViewSet):
-    queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
-
-    def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve':
-            return [IsAuthenticated()]
-        elif self.action == 'create':
-            return [IsAuthenticated()]
-        elif self.action in ['update', 'partial_update', 'destroy']:
-            return [IsAuthenticated(), IsOwner()]
-        return [IsAuthenticated()]
-
-    def perform_create(self, serializer):
-        # Привязываем урок к текущему пользователю
-        serializer.save(owner=self.request.user)
 
 
 class IsModerator(permissions.BasePermission):

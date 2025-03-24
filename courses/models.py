@@ -5,9 +5,6 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseForbidden
 
 
-from django.db import models
-from django.contrib.auth.models import User
-
 class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
