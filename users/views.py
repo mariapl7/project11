@@ -6,14 +6,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, RegisterSerializer
 from rest_framework import viewsets
-from .models import Course, Lesson
+from .models import Course, Lesson, Subscription
 from .serializers import CourseSerializer, LessonSerializer
 from .permissions import IsOwner
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
-from .serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseNotFound
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -77,3 +77,41 @@ class IsModerator(permissions.BasePermission):
     def has_permission(self, request, view):
         # Проверяем, состоит ли пользователь в группе "moderators"
         return request.user.groups.filter(name='moderators').exists()
+
+
+class SubscriptionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        # Получаем пользователя из запроса
+        user = request.user
+
+        # Получаем id курса из данных запроса
+        course_id = request.data.get('course_id')
+
+        # Получаем курс из базы данных
+        course = get_object_or_404(Course, id=course_id)
+
+        # Проверяем, существует ли уже подписка на этот курс для данного пользователя
+        subscription, created = Subscription.objects.get_or_create(user=user, course=course)
+
+        if not created:
+            # Если подписка уже существует, то удаляем ее
+            subscription.delete()
+            message = 'Подписка удалена'
+        else:
+            message = 'Подписка добавлена'
+
+        return Response({"message": message}, status=status.HTTP_200_OK)
+
+
+class CourseViewSet:
+    pass
+
+
+class LessonViewSet:
+    pass
+
+
+def custom_404(request, exception):
+    return HttpResponseNotFound("Страница не найдена")

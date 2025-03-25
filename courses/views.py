@@ -1,6 +1,8 @@
 from rest_framework import viewsets
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Course, Lesson
+from .paginators import CoursePagination, LessonPagination
 from .serializers import CourseSerializer, LessonSerializer
 from .permissions import IsOwner, IsModerator  # Импортируем кастомные разрешения
 
@@ -57,3 +59,19 @@ class LessonViewSet(viewsets.ModelViewSet):
         if self.request.user.groups.filter(name='Модератор').exists():
             return Lesson.objects.all()  # Модераторы могут видеть все уроки
         return Lesson.objects.filter(owner=self.request.user)  # Пользователь видит только свои уроки
+
+
+class SubscriptionView:
+    pass
+
+
+class CourseListView(ListAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    pagination_class = CoursePagination  # Указываем пагинатор для курсов
+
+
+class LessonListView(ListAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    pagination_class = LessonPagination  # Указываем пагинатор для уроков
