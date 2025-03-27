@@ -4,6 +4,7 @@ from courses.models import Course, Lesson
 
 User = get_user_model()  # Получаем кастомную модель пользователя, если она есть
 
+
 class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -11,6 +12,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
 
 # Модель для хранения информации о платеже
 class Payment(models.Model):
