@@ -144,3 +144,6 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
 }
+
+STRIPE_TEST_SECRET_KEY = "sk_test_...your_secret_key..."
+STRIPE_TEST_PUBLISHABLE_KEY = "pk_test_...your_publishable_key..."

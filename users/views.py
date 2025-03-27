@@ -4,16 +4,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, permissions
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer,  LessonSerializer, RegisterSerializer
 from rest_framework import viewsets
 from .models import Course, Lesson, Subscription
-from .serializers import CourseSerializer, LessonSerializer
 from .permissions import IsOwner
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseNotFound
+from .models import User
+from .serializers import UserSerializer
+from drf_yasg.utils import swagger_auto_schema
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -115,3 +117,16 @@ class LessonViewSet:
 
 def custom_404(request, exception):
     return HttpResponseNotFound("Страница не найдена")
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    @swagger_auto_schema(operation_description="Получение списка всех пользователей")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(operation_description="Создание нового пользователя")
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)

@@ -5,6 +5,7 @@ from .models import Course, Lesson
 from .paginators import CoursePagination, LessonPagination
 from .serializers import CourseSerializer, LessonSerializer
 from .permissions import IsOwner, IsModerator  # Импортируем кастомные разрешения
+from drf_yasg.utils import swagger_auto_schema
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -75,3 +76,16 @@ class LessonListView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     pagination_class = LessonPagination  # Указываем пагинатор для уроков
+
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+    @swagger_auto_schema(operation_description="Получение списка всех курсов")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(operation_description="Создание нового курса")
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)

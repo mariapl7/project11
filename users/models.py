@@ -18,3 +18,7 @@ class CustomUser(AbstractUser):
 
 class Lesson:
     pass
+
+
+class User:
+    pass
