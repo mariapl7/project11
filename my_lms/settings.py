@@ -108,10 +108,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
 
 MEDIA_URL = 'media/'
@@ -144,6 +140,34 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'  # Укажите ваш SMTP сервер
+EMAIL_PORT = 587  # Обычно 587 для TLS
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@example.com'
+EMAIL_HOST_PASSWORD = 'your-email-password'
+DEFAULT_FROM_EMAIL = 'your-email@example.com'
+
+import os
+
+CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+
+# Настройка для работы с celery-beat
+CELERY_BEAT_SCHEDULE = {
+    'task_name': {
+        'task': 'my_lms.tasks.some_periodic_task',
+        'schedule': crontab(minute=0, hour=12),
+    },
+}
+
+# Настройки для окружения (опционально)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
 STRIPE_TEST_SECRET_KEY = "sk_test_...your_secret_key..."
 STRIPE_TEST_PUBLISHABLE_KEY = "pk_test_...your_publishable_key..."
