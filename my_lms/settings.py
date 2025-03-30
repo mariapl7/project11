@@ -155,11 +155,13 @@ import os
 CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_RESULT_BACKEND = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 
+from celery.schedules import crontab
+
 # Настройка для работы с celery-beat
 CELERY_BEAT_SCHEDULE = {
-    'task_name': {
-        'task': 'my_lms.tasks.some_periodic_task',
-        'schedule': crontab(minute=0, hour=12),
+    'deactivate_inactive_users_task': {
+        'task': 'path.to.deactivate_inactive_users',  # Путь к задаче
+        'schedule': crontab(minute=0, hour=0),  # Например, раз в день в полночь
     },
 }
 

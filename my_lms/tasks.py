@@ -6,11 +6,6 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from datetime import timedelta
 
-@shared_task
-def some_periodic_task():
-    # Ваш код задачи
-    print('Task executed!')
-
 
 class UserSubscription:
     pass

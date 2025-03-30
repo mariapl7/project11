@@ -18,7 +18,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     # Пример: задача, которая будет запускаться каждый день в 12:00
     'task_name': {
-        'task': 'my_lms.tasks.some_periodic_task',
+        'task': 'my_lms.tasks.deactivate_inactive_users',
         'schedule': crontab(minute=0, hour=12),
     },
 }
