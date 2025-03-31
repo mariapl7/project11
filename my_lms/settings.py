@@ -160,7 +160,7 @@ from celery.schedules import crontab
 # Настройка для работы с celery-beat
 CELERY_BEAT_SCHEDULE = {
     'deactivate_inactive_users_task': {
-        'task': 'path.to.deactivate_inactive_users',  # Путь к задаче
+        'task': 'my_lms.tasks.deactivate_inactive_users',  # Путь к задаче
         'schedule': crontab(minute=0, hour=0),  # Например, раз в день в полночь
     },
 }
