@@ -1,12 +1,13 @@
 services:
   db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: dbname
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+    container_name: db
+    image: postgres:16
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env
 
   web:
     image: django:latest
@@ -22,6 +23,12 @@ services:
     depends_on:
       - db
 
+  redis:
+      container_name: redis
+      image: redis:latest
+      ports:
+        - "6379:6379"
+
   celery_worker:
     build: .
     container_name: celery_worker
@@ -35,6 +42,7 @@ services:
     command: celery -A pythonProject11 beat --loglevel=info
     depends_on:
       - db
+      - redis
 
 volumes:
   postgres_data:
